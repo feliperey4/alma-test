@@ -1,10 +1,31 @@
+# Leads Management API
+
+<!-- TOC -->
+* [To run the application locally, follow these steps:](#to-run-the-application-locally-follow-these-steps)
+  * [1. Prerequisites:](#1-prerequisites)
+  * [2. Environment Setup:](#2-environment-setup)
+  * [3. Build and run the images:](#3-build-and-run-the-images)
+  * [4. Use the Application:](#4-use-the-application)
+    * [Public API](#public-api)
+    * [Internal API](#internal-api)
+  * [5. Stopping the Application:](#5-stopping-the-application)
+  * [Troubleshooting](#troubleshooting)
+* [Usage Flow](#usage-flow)
+  * [1. Create Lead](#1-create-lead)
+  * [2. Register a New User](#2-register-a-new-user)
+  * [3. Login User](#3-login-user)
+  * [4. List Leads](#4-list-leads)
+  * [5. Update Lead Status](#5-update-lead-status)
+  * [6. Download CV/resume](#6-download-cvresume)
+<!-- TOC -->
+
 ## To run the application locally, follow these steps:
-1. Prerequisites:
+### 1. Prerequisites:
 - Docker and Docker Compose: Ensure you have Docker and Docker Compose installed on your system. 
 You can download them from the official Docker website.
 - Clone this project.
 
-2. Environment Setup:
+### 2. Environment Setup:
 `.env` file: This file will hold the environment variables required by the application. 
 Populate it with the following content, modifying values as needed:
 ```
@@ -19,7 +40,7 @@ ATTORNEY_EMAIL=attorney@example.com
 you'll likely need to use an "App Password" instead of your regular Gmail password.  
 You can generate one in your Google account settings under "Security" -> "2-Step Verification" -> "App passwords".  If you are not using Gmail, adapt `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, and `SMTP_PASSWORD` to your email provider's settings.
 
-3. Build and run the images:
+### 3. Build and run the images:
 The application uses a PostgreSQL database and a service with FastAPI. Running the following command will build and run all.
 ```
 docker-compose build
@@ -30,17 +51,17 @@ This command builds the application image and starts the application container. 
 
 You can use http://0.0.0.0:8000/api-doc to check the endpoint documentation and test the application.
 
-4. Use the Application:
-### Public API
+### 4. Use the Application:
+#### Public API
 Creating leads is possible without authentication.
 Simply fill out a form with email, first name, last name, and CV/Resume, then submit it using `POST /leads/`.
-### Internal API
+#### Internal API
 Before using this API, you must create a new user with `POST /internal/register`.
 Once you have a username and password, use the login endpoint `POST /internal/login` to receive a JWT token for authenticated lead endpoints.
 
-**Note**: see the **Usage Flow**. 
+**Note**: see [Usage Flow](#usage-flow). 
 
-5. Stopping the Application:
+### 5. Stopping the Application:
 To stop the running containers, use:
 ```
 docker-compose down

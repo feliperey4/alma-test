@@ -38,6 +38,8 @@ Simply fill out a form with email, first name, last name, and CV/Resume, then su
 Before using this API, you must create a new user with `POST /internal/register`.
 Once you have a username and password, use the login endpoint `POST /internal/login` to receive a JWT token for authenticated lead endpoints.
 
+**Note**: see the **Usage Flow**. 
+
 5. Stopping the Application:
 To stop the running containers, use:
 ```
@@ -49,3 +51,74 @@ docker-compose down
 - Database Connection Issues: If the application container fails to start due to database connection errors, ensure that the database container is running (docker-compose ps) and that the DATABASE_URL in your .env file matches the database settings in docker-compose.yml.
 - Port Conflicts: If you have another service running on port 8000 or 5432, you'll need to either stop that service or modify the port mappings in docker-compose.yml. For example, to run the app on port 8001, change the ports section of the app service to - "8001:8000".
 - Email Sending: Verify that the SMTP_* settings in your .env file are correct. Test your email configuration separately if necessary.
+
+
+# Usage Flow
+
+## 1. Create Lead
+
+```bash
+curl -X POST \
+  http://localhost:8000/leads/ \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'email=test@example.com' \
+  -F 'f_name=John' \
+  -F 'l_name=Doe' \
+  -F 'CV=@/path/to/your/resume.pdf' # Replace with the actual path to your CV file
+```
+
+## 2. Register a New User
+
+```bash
+curl -X POST \
+  http://localhost:8000/internal/auth/register \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "myuser",
+    "password": "mypassword"
+  }'
+```
+
+## 3. Login User
+
+```bash
+curl -X POST \
+  http://localhost:8000/internal/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "myuser",
+    "password": "mypassword"
+  }'
+```
+*Note: This will return a JSON object containing the `access_token`. You will need this token for subsequent authenticated requests.*
+
+## 4. List Leads
+
+```bash
+curl -X GET \
+  "http://localhost:8000/internal/leads/?email=test@example.com&state=new" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" 
+```
+*You can adjust the query parameters (`email`, `f_name`, `l_name`, `state`) to filter the results. Replace YOUR_ACCESS_TOKEN with the token obtained from the login step*
+
+## 5. Update Lead Status
+
+```bash
+curl -X PATCH \
+  "http://localhost:8000/internal/leads/LEAD_ID" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "status": "REACHED_OUT" 
+  }'
+```
+*This will update the status of the specified lead. Replace LEAD_ID with the actual ID of the lead and YOUR_ACCESS_TOKEN with your token.*
+
+## 6. Download CV/resume
+```bash
+curl -X GET \
+  "http://localhost:8000/internal/leads/LEAD_ID/cv-download" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -o downloaded_cv.pdf 
+```
+*This will download the CV associated with the specified lead ID to a file named `downloaded_cv.pdf`. Replace YOUR_ACCESS_TOKEN with the token obtained from the login step*

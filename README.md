@@ -59,7 +59,8 @@ Simply fill out a form with email, first name, last name, and CV/Resume, then su
 Before using this API, you must create a new user with `POST /internal/register`.
 Once you have a username and password, use the login endpoint `POST /internal/login` to receive a JWT token for authenticated lead endpoints.
 
-**Note**: see [Usage Flow](#usage-flow). 
+**Note**: see [Usage Flow](#usage-flow) or check the example in the 
+unit-test [api_test.py](https://github.com/feliperey4/alma-test/blob/main/test/api_test.py). 
 
 ### 5. Stopping the Application:
 To stop the running containers, use:
